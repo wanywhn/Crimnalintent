@@ -18,7 +18,7 @@ public class CrimeLab {
         mCrimes=new ArrayList<>();
         for (int i=0;i!=100;i++){
             Crime crime=new Crime();
-            crime.setmTitle("Crime #"+1);
+            crime.setmTitle("Crime #"+i);
             crime.setmSolved(i%2==0);
             mCrimes.add(crime);
         }
