@@ -1,8 +1,11 @@
 package wanywhn.com.cn.criminalintent;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -16,6 +19,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import static android.content.ContentValues.TAG;
@@ -25,13 +31,42 @@ import static android.content.ContentValues.TAG;
  */
 
 public class CrimeFragment extends Fragment {
+    private static final int REQUEST_DATE = 0;
+    private static final int REQUEST_TIME= 1;
     private Crime mCrime;
     private EditText mTitleEdit;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
     private TextView mTitleField;
+    private Button mTimeButton;
 
     private static final String ARG_CRIME_ID="crime_id";
+    private static final String DIALOG_DATE="DialogDate";
+    public static final String DIALOG_TIME="DialogTime";
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode!= Activity.RESULT_OK){
+            return;
+        }
+        switch (requestCode){
+            case REQUEST_TIME:
+                Calendar calendar=new GregorianCalendar();
+                calendar.setTime(mCrime.getmData());
+                Date date= (Date) data.getSerializableExtra(TimePickerFragment.TIMT);
+                Calendar TimeCalendar=new GregorianCalendar();
+                TimeCalendar.setTime(date);
+                calendar.set(Calendar.HOUR,TimeCalendar.get(Calendar.HOUR));
+                calendar.set(Calendar.MINUTE,TimeCalendar.get(Calendar.MINUTE));
+                mCrime.setmData(calendar.getTime());
+                break;
+            case REQUEST_DATE:
+                mCrime.setmData((Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE));
+                mDateButton.setText(mCrime.getmData().toString());
+                break;
+        }
+    }
+
     public static CrimeFragment newInstance(UUID crimeID){
         Bundle args=new Bundle();
         args.putSerializable(ARG_CRIME_ID,crimeID);
@@ -46,9 +81,29 @@ public class CrimeFragment extends Fragment {
         View v=inflater.inflate(R.layout.fragment_crime,container,false);
 
         Log.i(TAG, "onCreateView: CREATED");
+        mTimeButton= (Button) v.findViewById(R.id.crime_time);
+        mTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager=getFragmentManager();
+                TimePickerFragment dialog=TimePickerFragment.newInstatce(mCrime.getmData());
+                dialog.setTargetFragment(CrimeFragment.this,REQUEST_TIME);
+                dialog.show(fragmentManager,DIALOG_TIME);
+            }
+        });
         mDateButton= (Button) v.findViewById(R.id.crime_date);
         mDateButton.setText(mCrime.getmData().toString());
-        mDateButton.setEnabled(false);
+//        mDateButton.setEnabled(false);
+        mDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager = getFragmentManager();
+                DatePickerFragment dialog=DatePickerFragment.newInstance(mCrime.getmData());
+                dialog.setTargetFragment(CrimeFragment.this,REQUEST_DATE);
+                dialog.show(fragmentManager,DIALOG_DATE);
+            }
+        });
+
 
         mSolvedCheckBox= (CheckBox) v.findViewById(R.id.crime_solved);
         mSolvedCheckBox.setChecked(mCrime.ismSolved());
