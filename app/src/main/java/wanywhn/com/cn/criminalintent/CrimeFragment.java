@@ -10,6 +10,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -75,6 +78,12 @@ public class CrimeFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_crime_viewer,menu);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -137,6 +146,21 @@ public class CrimeFragment extends Fragment {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_item_delete:
+                CrimeLab.getmCrimeLab(getActivity()).delCrime(mCrime);
+//                Intent data=new Intent();
+//                data.putExtra(CrimeListFragment.CHANG_ID,CrimeLab.getmCrimeLab(getActivity()).getCrimes().indexOf(mCrime));
+//                getActivity().getParent().getFragmentManager().findFragmentById(R.id.crime_recycler_view).onActivityResult(CrimeListFragment.START_LIST_ITEM_CRIME,Activity.RESULT_OK,data);
+
+                this.getActivity().finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate: CREATED");
@@ -144,5 +168,6 @@ public class CrimeFragment extends Fragment {
         Bundle arguments = getArguments();
         UUID crimeID = (UUID) arguments.getSerializable(ARG_CRIME_ID);
         mCrime=CrimeLab.getmCrimeLab(getActivity()).getCrime(crimeID);
+        setHasOptionsMenu(true);
     }
 }

@@ -16,14 +16,17 @@ public class CrimeLab {
 
     private CrimeLab(Context context) {
         mCrimes=new ArrayList<>();
-        for (int i=0;i!=100;i++){
-            Crime crime=new Crime();
-            crime.setmTitle("Crime #"+i);
-            crime.setmSolved(i%2==0);
-            mCrimes.add(crime);
-        }
+//        for (int i=0;i!=100;i++){
+//            Crime crime=new Crime();
+//            crime.setmTitle("Crime #"+i);
+//            crime.setmSolved(i%2==0);
+//            mCrimes.add(crime);
+//        }
     }
 
+    public void addCrime(Crime c){
+        mCrimes.add(c);
+    }
     public static CrimeLab getmCrimeLab(Context context) {
         if (mCrimeLab == null) {
             mCrimeLab=new CrimeLab(context);
@@ -42,4 +45,7 @@ public class CrimeLab {
         return null;
     }
 
+    public void delCrime(Crime mCrime) {
+        mCrimes.remove(mCrime);
+    }
 }
