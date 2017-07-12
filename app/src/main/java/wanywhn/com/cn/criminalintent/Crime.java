@@ -12,6 +12,12 @@ public class Crime {
     private String mTitle;
     private Date mData;
     private boolean mSolved;
+    private String mSusptect;
+
+    public Crime(UUID uuid) {
+        mId=uuid;
+        mData=new Date();
+    }
 
     public UUID getmId() {
         return mId;
@@ -42,9 +48,15 @@ public class Crime {
     }
 
     public Crime(){
-        mId= UUID.randomUUID();
-        mData=new Date();
+        this(UUID.randomUUID());
 
     }
 
+    public String getmSusptect() {
+        return mSusptect;
+    }
+
+    public void setmSusptect(String mSusptect) {
+        this.mSusptect = mSusptect;
+    }
 }

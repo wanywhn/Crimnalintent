@@ -89,7 +89,7 @@ public class CrimeListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
         mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        updateUI(0);
+        updateUI(-1);
         return view;
     }
 
@@ -117,7 +117,7 @@ public class CrimeListFragment extends Fragment {
     private void updateSubtitle() {
         CrimeLab crimeLab = CrimeLab.getmCrimeLab(getActivity());
         int size = crimeLab.getCrimes().size();
-        String subtitle = getString(R.string.subtitle_format, size);
+        String subtitle = getResources().getQuantityString(R.plurals.subtitle_format,size,size);
         if (!mSubtitleVisible) {
             subtitle = null;
         }
@@ -129,14 +129,13 @@ public class CrimeListFragment extends Fragment {
     private void updateUI(int intExtra) {
         CrimeLab crimeLab = CrimeLab.getmCrimeLab(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
+        mCrimeRecyclerView.setVisibility(View.VISIBLE);
         if (mAdapter == null) {
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
         } else {
-            if (intExtra == -1)
+            mAdapter.setmCrimes(crimes);
                 mAdapter.notifyDataSetChanged();
-            else
-                mAdapter.notifyItemChanged(intExtra);
         }
         updateSubtitle();
 
@@ -179,6 +178,7 @@ public class CrimeListFragment extends Fragment {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             mCrime.setmSolved(isChecked);
+            CrimeLab.getmCrimeLab(getActivity()).updateCrime(mCrime);
         }
     }
 
@@ -186,6 +186,9 @@ public class CrimeListFragment extends Fragment {
 
         private List<Crime> mCrimes;
 
+        public void setmCrimes(List<Crime> crimes){
+            mCrimes=crimes;
+        }
         public CrimeAdapter(List<Crime> crimes) {
             mCrimes = crimes;
         }

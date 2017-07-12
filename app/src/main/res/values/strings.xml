@@ -9,6 +9,11 @@
     <string name="new_crime">New Crime</string>
     <string name="show_subtitle">Show Subtitle</string>
     <string name="hide_subtitle">Hide Subtitle</string>
-    <string name="subtitle_format">%1$o Crimes</string>
+    <plurals name="subtitle_format">
+        <item quantity="one">%1$d crime</item>
+        <item quantity="other">%1$d crimes</item>
+    </plurals>
     <string name="crime_item_delete">Delete This</string>
+    <string name="crime_suspect_text">CHOOSE SUSPTECT</string>
+    <string name="crime_report_text">SEND CRIME REPORT</string>
 </resources>
